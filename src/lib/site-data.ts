@@ -37,11 +37,27 @@ import {
 import foodSectorImage from "@/assets/food-sector.jpg";
 import plasticsSectorImage from "@/assets/plastics-sector.jpg";
 import digitalSectorImage from "@/assets/hero-globe.jpg";
+import redLentils from "@/assets/products/red-lentils.jfif"
+import yellowLentils from "@/assets/products/yellow-lentils.jfif"
+import chickpeas from "@/assets/products/chickpeas.jfif"
+import basmatiRice from "@/assets/products/basmati-rice.jfif"
+import peanuts from "@/assets/products/peanuts.jfif"
+import wheatFlour from "@/assets/products/wheat-flour.jfif"
+import whiteBeans from "@/assets/products/white-beans.jfif"
+import barley from "@/assets/products/barley.jfif"
+import egyptianRice from "@/assets/products/egyptian-rice.jfif"
+import oliveOil from "@/assets/products/olive-oil.jfif"
+import sunflowerOil from "@/assets/products/sunflower-oil.jfif"
+import cornOil from "@/assets/products/corn-oil.jfif"
+import soybeanOil from "@/assets/products/soybean-oil.jfif"
+import palmOil from "@/assets/products/palm-oil.jfif"
+
 
 export type Product = {
     name: string;
     icon: LucideIcon;
     blurb: string;
+    image?: string;
 };
 
 export type Sector = {
@@ -149,22 +165,26 @@ export const products = {
         {
             name: "أرز بسمتي ملكي",
             icon: Wheat,
+            image: basmatiRice,
             blurb: "حبة طويلة وعطر مميز من أجود مصادر الاستيراد.",
         },
 
         {
             name: "أرز مصري قصير الحبة",
             icon: Sprout,
+            image: egyptianRice,
             blurb: "مثالي للأطباق التقليدية بقوام متماسك.",
         },
         {
             name: "قمح وطحين فاخر",
             icon: Wheat,
+            image: wheatFlour,
             blurb: "قمح مطحون بمعايير صارمة لصناعات المخابز.",
         },
         {
             name: "شعير علف وتصنيع",
             icon: Sprout,
+            image: barley,
             blurb: "دفعات كبيرة لصناعات الأعلاف والتصنيع الغذائي.",
         },
     ],
@@ -172,26 +192,31 @@ export const products = {
         {
             name: "زيت زيتون بكر ممتاز",
             icon: Droplet,
+            image: oliveOil,
             blurb: "استخلاص بارد ونسبة حموضة منخفضة.",
         },
         {
             name: "زيت دوار الشمس",
             icon: Droplets,
+            image: sunflowerOil,
             blurb: "نقاء عالٍ ومناسب للاستخدام المنزلي والصناعي.",
         },
         {
             name: "زيت الذرة",
             icon: Droplet,
+            image: cornOil,
             blurb: "خيار اقتصادي بثبات حراري جيد للقلي.",
         },
         {
             name: "زيت الصويا",
             icon: Droplets,
+            image: soybeanOil,
             blurb: "توريد بالجملة لمصانع التعبئة وإعادة التكرير.",
         },
         {
             name: "زيت النخيل",
             icon: Droplet,
+            image: palmOil,
             blurb: "مواصفات تصديرية لصناعات الأغذية والتصنيع.",
         },
     ],
@@ -199,26 +224,31 @@ export const products = {
         {
             name: "عدس أحمر مصري",
             icon: Bean,
+            image: redLentils,
             blurb: "تدرّج لوني موحّد وزمن طبخ قصير.",
         },
         {
             name: "عدس أصفر مقشر",
             icon: Bean,
+            image: yellowLentils,
             blurb: "منتج مقشور بالكامل جاهز للتعبئة الاستهلاكية.",
         },
         {
             name: "حمص فاخر",
             icon: Nut,
+            image: chickpeas,
             blurb: "حبة كاملة ومنتظمة الحجم لأسواق التجزئة.",
         },
         {
             name: "فاصوليا بيضاء",
             icon: Bean,
+            image: whiteBeans,
             blurb: "توريد منتظم بأحجام تعبئة مرنة.",
         },
         {
             name: "فول سوداني نيء",
             icon: Nut,
+            image: peanuts,
             blurb: "دفعات مفحوصة خالية من الشوائب والرطوبة الزائدة.",
         },
     ],

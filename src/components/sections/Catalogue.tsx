@@ -6,7 +6,7 @@ import { Reveal } from "@/components/effects/Reveal";
 import { SectionHeading } from "@/components/effects/SectionHeading";
 import { Tilt } from "@/components/effects/Tilt";
 import { Button } from "@/components/ui/button";
-import { products, sectors, type CategoryName, type SectorKey } from "@/lib/site-data";
+import { products, sectors, type CategoryName, type Product, type SectorKey } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
 const skuPrefix: Record<SectorKey, string> = {
@@ -39,7 +39,7 @@ export function Catalogue({
     onSectorChange: (key: SectorKey) => void;
 }) {
     const sector = sectors[sectorKey];
-    const visibleProducts = products[category] ?? [];
+    const visibleProducts: Product[] = products[category] ?? [];
 
     return (
         <section id="catalogue" className="relative isolate overflow-hidden bg-ink py-24 text-pearl md:py-32">
@@ -124,12 +124,23 @@ export function Catalogue({
                                         <Tilt max={10} className="h-full rounded-2xl">
                                             <article className="glass-dark gold-border group h-full rounded-2xl p-5">
                                                 <div className="depth-sm relative mb-5 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-pearl/10 bg-linear-to-br from-navy-2 via-surface to-ink">
-                                                    <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,oklch(0.655_0.106_75.6/0.4),transparent_62%)]" />
-                                                    <Icon
-                                                        size={46}
-                                                        strokeWidth={1.25}
-                                                        className="relative text-gold-soft transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
-                                                    />
+                                                    {item.image ? (
+                                                        <img
+                                                            src={item.image}
+                                                            alt={item.name}
+                                                            loading="lazy"
+                                                            className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                        />
+                                                    ) : (
+                                                        <>
+                                                            <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,oklch(0.655_0.106_75.6/0.4),transparent_62%)]" />
+                                                            <Icon
+                                                                size={46}
+                                                                strokeWidth={1.25}
+                                                                className="relative text-gold-soft transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
+                                                            />
+                                                        </>
+                                                    )}
                                                 </div>
                                                 <span className="depth-md block font-mono text-xs text-gold">
                                                     {skuPrefix[sectorKey]}-{401 + index}
