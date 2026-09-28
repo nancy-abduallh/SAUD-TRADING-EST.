@@ -50,7 +50,8 @@ export function Footer() {
                         <div className="flex items-center gap-3">
                             <img src={logoMark} alt="شعار سعود التجارية" className="h-10 w-auto" />
                             <span className="text-3xl font-bold">
-                                سعود<span className="gradient-text-gold">.</span>
+                                سعود التجارية<span className="gradient-text-gold">.</span>
+
                             </span>
                         </div>
                         <p className="mt-4 max-w-sm text-sm leading-7 text-pearl/60">

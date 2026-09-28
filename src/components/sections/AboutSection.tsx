@@ -3,6 +3,7 @@ import { MapPin, Ship } from "lucide-react";
 import egypt from "@/assets/egypt.png";
 import dubai from "@/assets/dubai.png";
 import saudi from "@/assets/saudi.png";
+import hero from "@/assets/hero-globe.jpg";
 import { MovingBg } from "@/components/effects/MovingBg";
 import { Reveal } from "@/components/effects/Reveal";
 import { SectionHeading } from "@/components/effects/SectionHeading";
@@ -14,7 +15,7 @@ const IMG = "h-full w-full rounded-3xl object-cover shadow-[0_40px_70px_-30px_ok
 export function AboutSection() {
     return (
         <section id="about" className="relative isolate overflow-hidden bg-pearl py-24 md:py-32">
-            <MovingBg src={egypt} tone="light" motion="pan" />
+            <MovingBg src={hero} tone="light" motion="pan" />
             <div className="relative mx-auto grid max-w-7xl items-center gap-16 px-5 md:px-8 lg:grid-cols-2">
                 <div>
                     <Reveal>

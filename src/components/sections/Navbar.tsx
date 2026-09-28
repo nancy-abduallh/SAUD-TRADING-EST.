@@ -42,7 +42,7 @@ export function Navbar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOp
                     <a href="#top" className="flex items-center gap-3">
                         <img src={logoMark} alt="شعار سعود التجارية" className="h-10 w-auto drop-shadow-sm" />
                         <span className="text-2xl font-bold text-pearl">
-                            سعود<span className="gradient-text-gold">.</span>
+                            سعود التجارية<span className="gradient-text-gold">.</span>
                         </span>
                     </a>
                     <div className="hidden items-center gap-8 text-sm md:flex">
