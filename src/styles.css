@@ -15,7 +15,7 @@
  *
  * To add a new semantic color:
  * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
+ * 2. Register it in @theme inline as --color-<n>: var(--<n>)
  */
 
 @theme inline {
@@ -62,40 +62,64 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-pearl: var(--pearl);
-  --color-sage: var(--sage);
-  --color-emerald: var(--emerald);
+  --color-sand: var(--sand);
+  --color-navy: var(--navy);
+  --color-navy-2: var(--navy-2);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
+  --color-gold-deep: var(--gold-deep);
   --color-ink: var(--ink);
+  --color-surface: var(--surface);
 }
 
 :root {
+  /*
+   * Palette pixel-sampled from Saud Trading Est.'s company profile
+   * (logo lockup + brand backgrounds): deep navy + gold on warm ivory.
+   */
   --radius: 0.25rem;
-  --background: oklch(0.99 0.008 130);
-  --foreground: oklch(0.2 0.025 155);
+  --background: oklch(0.979 0.007 88.6);
+  /* pearl #faf8f3 */
+  --foreground: oklch(0.22 0.042 263.2);
+  /* #101a2e */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.025 155);
+  --card-foreground: oklch(0.22 0.042 263.2);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.025 155);
-  --primary: oklch(0.5 0.105 166);
-  --primary-foreground: oklch(0.99 0.008 130);
-  --secondary: oklch(0.94 0.025 145);
-  --secondary-foreground: oklch(0.28 0.055 160);
-  --muted: oklch(0.96 0.012 145);
-  --muted-foreground: oklch(0.52 0.025 155);
-  --accent: oklch(0.75 0.09 84);
-  --accent-foreground: oklch(0.2 0.025 155);
+  --popover-foreground: oklch(0.22 0.042 263.2);
+  --primary: oklch(0.257 0.077 262.1);
+  /* brand navy #0d2148 */
+  --primary-foreground: oklch(0.979 0.007 88.6);
+  --secondary: oklch(0.941 0.017 88);
+  /* sand #f0ebdf */
+  --secondary-foreground: oklch(0.257 0.077 262.1);
+  --muted: oklch(0.958 0.012 88);
+  --muted-foreground: oklch(0.503 0.034 266.1);
+  /* #5b6478 */
+  --accent: oklch(0.655 0.106 75.6);
+  /* gold #b6873f */
+  --accent-foreground: oklch(0.158 0.036 265.6);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.88 0.025 150);
-  --input: oklch(0.88 0.025 150);
-  --ring: oklch(0.5 0.105 166);
-  --pearl: oklch(0.99 0.008 130);
-  --sage: oklch(0.94 0.025 145);
-  --emerald: oklch(0.5 0.105 166);
-  --gold: oklch(0.75 0.09 84);
-  --gold-soft: oklch(0.82 0.08 84);
-  --ink: oklch(0.2 0.025 155);
+  --border: oklch(0.9 0.021 91.6);
+  /* #e3decf */
+  --input: oklch(0.9 0.021 91.6);
+  --ring: oklch(0.655 0.106 75.6);
+  --pearl: oklch(0.979 0.007 88.6);
+  --sand: oklch(0.941 0.017 88);
+  --navy: oklch(0.257 0.077 262.1);
+  /* #0d2148 */
+  --navy-2: oklch(0.326 0.093 261.2);
+  /* #173263 — one step lighter, for gradients */
+  --gold: oklch(0.655 0.106 75.6);
+  /* #b6873f */
+  --gold-soft: oklch(0.821 0.085 83.4);
+  /* #dfc084 */
+  --gold-deep: oklch(0.531 0.091 75.8);
+  /* #8a6428 */
+  --ink: oklch(0.158 0.036 265.6);
+  /* near-black navy bg #060c1c */
+  --surface: oklch(0.237 0.059 264.2);
+  /* raised panel on ink #101d3a */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -159,23 +183,63 @@
     margin: 0;
   }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @keyframes hero-drift {
-  0% { transform: scale(1.02) translateX(0); }
-  100% { transform: scale(1.08) translateX(1.5%); }
+  0% {
+    transform: scale(1.02) translateX(0);
+  }
+
+  100% {
+    transform: scale(1.08) translateX(1.5%);
+  }
 }
 
 @keyframes reveal-up {
-  0% { opacity: 0; transform: translateY(24px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-@utility hero-drift { animation: hero-drift 12s ease-in-out infinite alternate; }
-@utility reveal-up { animation: reveal-up 0.9s ease-out both; }
+@keyframes marquee-ltr {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@utility hero-drift {
+  animation: hero-drift 12s ease-in-out infinite alternate;
+}
+
+@utility reveal-up {
+  animation: reveal-up 0.9s ease-out both;
+}
+
+@utility animate-marquee {
+  animation: marquee-ltr 32s linear infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .hero-drift, .reveal-up { animation: none; }
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-drift,
+  .reveal-up,
+  .animate-marquee {
+    animation: none;
+  }
 }
