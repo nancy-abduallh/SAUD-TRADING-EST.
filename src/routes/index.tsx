@@ -46,13 +46,18 @@ function Index() {
     requestAnimationFrame(() => document.getElementById("catalogue")?.scrollIntoView({ behavior: "smooth" }));
   };
 
+  const changeSector = (key: SectorKey) => {
+    setSectorKey(key);
+    setCategory(sectors[key].categories[0] as CategoryName);
+  };
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-pearl text-ink" dir="rtl">
       <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
       <HeroSlider />
       <StatsBar />
       <SectorsGrid onSelect={selectSector} />
-      <Catalogue sectorKey={sectorKey} category={category} setCategory={setCategory} />
+      <Catalogue sectorKey={sectorKey} category={category} setCategory={setCategory} onSectorChange={changeSector} />
       <VisionValues />
       <DigitalEcosystem />
       <ComparisonTable />

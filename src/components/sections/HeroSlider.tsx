@@ -66,8 +66,8 @@ export function HeroSlider() {
 
     return (
         <header id="top" className="relative min-h-[92svh] overflow-hidden">
-            <div className="h-full min-h-[92svh] overflow-hidden" ref={emblaRef}>
-                <div className="flex h-full min-h-[92svh]">
+            <div className="absolute inset-0 overflow-hidden" ref={emblaRef}>
+                <div className="flex h-full">
                     {slides.map((slide, index) => (
                         <div key={slide.alt} className="relative min-w-0 flex-[0_0_100%]">
                             <img
@@ -87,12 +87,12 @@ export function HeroSlider() {
             <div className="pointer-events-none absolute inset-0 bg-linear-to-l from-ink/90 via-ink/40 to-ink/10" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-pearl to-transparent" />
 
-            <div className="absolute inset-0 z-10 flex items-center">
-                <div className="mx-auto w-full max-w-7xl px-5 pt-20 md:px-8">
+            <div className="relative z-10 flex min-h-[92svh] items-center">
+                <div className="mx-auto grid w-full max-w-7xl px-5 pb-48 pt-32 md:px-8 md:pb-52">
                     {slides.map((slide, index) => (
                         <div
                             key={slide.alt}
-                            className={`max-w-3xl transition-opacity duration-700 ${selected === index ? "reveal-up opacity-100" : "pointer-events-none absolute inset-0 opacity-0"
+                            className={`col-start-1 row-start-1 max-w-3xl transition-opacity duration-700 ${selected === index ? "reveal-up opacity-100" : "pointer-events-none opacity-0"
                                 }`}
                             aria-hidden={selected !== index}
                         >
@@ -100,7 +100,7 @@ export function HeroSlider() {
                                 <span className="h-px w-12 bg-gold" />
                                 <span className="font-mono text-xs text-gold">{slide.eyebrow}</span>
                             </div>
-                            <h1 className="text-5xl font-bold leading-[1.15] text-pearl md:text-8xl">
+                            <h1 className="text-5xl font-bold leading-[1.15] text-pearl md:text-7xl xl:text-8xl">
                                 {slide.heading[0]}
                                 <br />
                                 <span className="text-gold">{slide.heading[1]}</span>
@@ -121,7 +121,7 @@ export function HeroSlider() {
                 </div>
             </div>
 
-            <div className="absolute inset-x-0 bottom-24 z-20 flex items-center justify-center gap-2">
+            <div className="absolute inset-x-0 bottom-32 z-20 flex items-center justify-center gap-2">
                 {slides.map((slide, index) => (
                     <button
                         key={slide.alt}
@@ -151,7 +151,7 @@ export function HeroSlider() {
 
             <a href="#sectors"
                 aria-label="انتقل إلى القطاعات"
-                className="absolute bottom-10 left-1/2 z-20 -translate-x-1/2 text-pearl"
+                className="absolute bottom-20 left-1/2 z-20 -translate-x-1/2 text-pearl"
             >
                 <ChevronDown className="animate-bounce" />
             </a>

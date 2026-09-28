@@ -5,13 +5,15 @@ import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex h-11 items-center justify-center gap-2 border px-5 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex h-11 items-center justify-center gap-2 rounded-lg border px-5 text-sm font-semibold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        primary: "border-primary bg-primary text-primary-foreground hover:bg-ink",
-        gold: "border-gold bg-gold text-ink hover:-translate-y-0.5 hover:bg-gold-soft",
-        glass: "border-pearl/30 bg-pearl/10 text-pearl backdrop-blur-sm hover:bg-pearl/20",
+        primary:
+          "border-primary/80 bg-linear-to-br from-navy-2 to-navy text-primary-foreground shadow-[0_12px_30px_-12px_oklch(0.257_0.077_262.1/0.7)] hover:-translate-y-0.5 hover:brightness-125",
+        gold:
+          "gradient-bg-gold border-gold/60 text-ink shadow-[0_12px_32px_-10px_oklch(0.655_0.106_75.6/0.75)] hover:-translate-y-0.5 hover:brightness-110",
+        glass: "border-pearl/30 bg-pearl/10 text-pearl backdrop-blur-md hover:border-gold/60 hover:bg-pearl/20",
         outline: "border-primary/20 bg-transparent text-primary hover:bg-primary hover:text-primary-foreground",
         ghost: "border-transparent bg-transparent text-foreground hover:bg-secondary",
       },
