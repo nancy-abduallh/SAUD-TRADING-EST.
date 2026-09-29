@@ -62,6 +62,15 @@ import aou from "@/assets/clients/aou.png";
 import alibaba from "@/assets/clients/alibaba.png";
 import naqi from "@/assets/clients/naqi.png";
 import kingdomSchools from "@/assets/clients/kingdom-schools.png";
+import hdpe from "@/assets/products/hdpe.jfif"
+import ldpe from "@/assets/products/ldpe.jfif"
+import pp from "@/assets/products/pp.jfif"
+import flexiblePackaging from "@/assets/products/flexible-film.jfif"
+import industrialBags from "@/assets/products/industrial-bags.jfif"
+import foodGradeContainers from "@/assets/products/food-containers.jfif"
+import plasticCompounds from "@/assets/products/plastic-compounds.jfif"
+import plasticAdditives from "@/assets/products/manufacturing-additives.jfif"
+import recycledPlastics from "@/assets/products/recycled-materials.jfif"
 
 
 export type Product = {
@@ -125,16 +134,19 @@ export const products = {
         {
             name: "بوليثيلين عالي الكثافة (HDPE)",
             icon: Boxes,
+            image: hdpe,
             blurb: "حبيبات عالية الكثافة لقولبة الحاويات والأنابيب.",
         },
         {
             name: "بوليثيلين منخفض الكثافة (LDPE)",
             icon: Layers,
+            image: ldpe,
             blurb: "مرونة عالية لأفلام التغليف والأكياس الصناعية.",
         },
         {
             name: "بولي بروبلين (PP)",
             icon: CircleDot,
+            image: pp,
             blurb: "مقاومة حرارية ممتازة للتطبيقات الصناعية والمنزلية.",
         },
     ],
@@ -142,16 +154,19 @@ export const products = {
         {
             name: "أفلام تغليف مرنة",
             icon: Scroll,
+            image: flexiblePackaging,
             blurb: "أفلام أحادية وثلاثية الطبقات بمواصفات تصديرية.",
         },
         {
             name: "أكياس صناعية",
             icon: ShoppingBag,
+            image: industrialBags,
             blurb: "أكياس نسيجية وشبكية بأحمال تحمل متفاوتة.",
         },
         {
             name: "عبوات غذائية",
             icon: Container,
+            image: foodGradeContainers,
             blurb: "عبوات آمنة غذائياً معتمدة من جهات الرقابة الدولية.",
         },
     ],
@@ -159,16 +174,19 @@ export const products = {
         {
             name: "مركبات بلاستيكية",
             icon: FlaskConical,
+            image: plasticCompounds,
             blurb: "خلطات مخصصة حسب متطلبات خط الإنتاج.",
         },
         {
             name: "إضافات تصنيع",
             icon: Beaker,
+            image: plasticAdditives,
             blurb: "إضافات تحسّن الأداء الحراري والميكانيكي للمنتج.",
         },
         {
             name: "مواد معاد تدويرها",
             icon: Recycle,
+            image: recycledPlastics,
             blurb: "حلول مستدامة بمعايير جودة تعادل المواد الخام.",
         },
     ],

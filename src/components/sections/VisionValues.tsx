@@ -5,6 +5,7 @@ import { MovingBg } from "@/components/effects/MovingBg";
 import { Reveal } from "@/components/effects/Reveal";
 import { SectionHeading } from "@/components/effects/SectionHeading";
 import { Tilt } from "@/components/effects/Tilt";
+import { VisionCube } from "@/components/effects/VisionCube";
 import { values, visionStatement } from "@/lib/site-data";
 
 export function VisionValues() {
@@ -31,12 +32,14 @@ export function VisionValues() {
                                 <span className="depth-lg gradient-bg-gold flex size-16 items-center justify-center rounded-2xl text-ink shadow-xl">
                                     <Quote size={28} />
                                 </span>
-                                <p className="depth-md mt-10 text-2xl font-medium leading-[2.6rem]">{visionStatement}</p>
+                                <div className="depth-lg flex flex-1 items-center justify-center py-4">
+                                    <VisionCube />
+                                </div>
+                                <p className="depth-md text-2xl font-medium leading-[2.6rem]">{visionStatement}</p>
                                 <div className="depth-sm mt-10 flex items-center gap-4">
                                     <span className="h-px flex-1 bg-linear-to-l from-gold/70 to-transparent" />
                                     <span className="font-mono text-xs tracking-widest text-gold-soft">VISION 2030 READY</span>
                                 </div>
-                                <div className="ring pointer-events-none !inset-auto -bottom-24 -left-24 size-72 opacity-60" />
                             </div>
                         </Tilt>
                     </Reveal>
