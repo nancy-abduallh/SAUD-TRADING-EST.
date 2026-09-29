@@ -22,7 +22,7 @@ export function SectorsGrid({ onSelect }: { onSelect: (key: SectorKey) => void }
                 <Reveal>
                     <SectionHeading
                         index="01"
-                        eyebrow="BUSINESS SECTORS"
+                        eyebrow="قطاعات الأعمال"
                         title={
                             <>
                                 قطاعاتنا <span className="gradient-text-gold">الرئيسية</span>

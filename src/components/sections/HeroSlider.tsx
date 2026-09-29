@@ -22,7 +22,7 @@ const slides: Slide[] = [
         image: heroPort,
         imagePosition: "center",
         alt: "ميناء تجاري وسفينة شحن عند الغروب",
-        eyebrow: "LEADING GLOBAL TRADE",
+        eyebrow: "ريادة التجارة العالمية",
         heading: ["نربط العالم", "بأمانة سعودية"],
         paragraph:
             "حلول متكاملة لسلاسل الإمداد، من المواد الخام البلاستيكية إلى أجود أنواع الأغذية العالمية، بمعايير تتجاوز التوقعات.",
@@ -31,7 +31,7 @@ const slides: Slide[] = [
         image: heroSkyline,
         imagePosition: "center 22%",
         alt: "برج المملكة وأفق الرياض عند الليل",
-        eyebrow: "A SAUDI VISION, WORLDWIDE",
+        eyebrow: "رؤية سعودية عالمية",
         heading: ["رؤية سعودية", "تتجاوز الحدود"],
         paragraph:
             "من قلب المملكة إلى أسواق مصر والإمارات، نبني منظومة تجارية ورقمية متكاملة تواكب رؤية 2030.",
@@ -40,7 +40,7 @@ const slides: Slide[] = [
         image: heroGlobe,
         imagePosition: "center",
         alt: "شبكة اتصال رقمية عالمية مضيئة",
-        eyebrow: "A CONNECTED NETWORK",
+        eyebrow: "شبكة مترابطة",
         heading: ["شبكة عالمية", "من الشركاء والموارد"],
         paragraph:
             "أكثر من 45 سوقاً دولياً ومنظومة رقمية مدعومة بالذكاء الاصطناعي تربطك بعملائك أينما كانوا.",

@@ -34,7 +34,7 @@ export function DigitalEcosystem() {
                     <Reveal>
                         <SectionHeading
                             index="04"
-                            eyebrow="ONE INTEGRATED SYSTEM"
+                            eyebrow="منظومة واحدة متكاملة"
                             tone="dark"
                             title={
                                 <>

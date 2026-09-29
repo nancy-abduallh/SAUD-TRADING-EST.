@@ -22,7 +22,7 @@ export function SectionHeading({ index, eyebrow, title, description, tone = "lig
                         {index}
                     </span>
                     <span className="h-px w-10 bg-gold/60" />
-                    <span className="font-mono text-xs tracking-widest text-gold">{eyebrow}</span>
+                    <span className="text-sm font-semibold text-gold">{eyebrow}</span>
                 </div>
                 <h2 className={cn("mt-5 text-4xl font-bold leading-[1.2] md:text-5xl", dark ? "text-pearl" : "text-primary")}>{title}</h2>
                 {description && (

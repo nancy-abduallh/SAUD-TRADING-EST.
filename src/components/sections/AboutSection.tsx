@@ -21,7 +21,7 @@ export function AboutSection() {
                     <Reveal>
                         <SectionHeading
                             index="07"
-                            eyebrow="SAUD TRADING"
+                            eyebrow="سعود التجارية"
                             title={
                                 <>
                                     توريد محسوب.

@@ -17,7 +17,7 @@ export function ComparisonTable() {
                 <Reveal>
                     <SectionHeading
                         index="05"
-                        eyebrow="WHY IT MATTERS"
+                        eyebrow="لماذا هذا مهم"
                         align="center"
                         title={
                             <>

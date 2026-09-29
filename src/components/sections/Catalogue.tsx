@@ -48,7 +48,7 @@ export function Catalogue({
                 <Reveal>
                     <SectionHeading
                         index="02"
-                        eyebrow="SMART CATALOGUE"
+                        eyebrow="الكتالوج الذكي"
                         tone="dark"
                         title={<span className="gradient-text-gold">{sector.title}</span>}
                         description={sector.description}

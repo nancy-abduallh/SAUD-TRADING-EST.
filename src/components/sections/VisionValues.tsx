@@ -15,7 +15,7 @@ export function VisionValues() {
                 <Reveal>
                     <SectionHeading
                         index="03"
-                        eyebrow="OUR VISION"
+                        eyebrow="وجهتنا"
                         title={
                             <>
                                 رؤيتنا <span className="gradient-text-gold">وقيمنا</span>
