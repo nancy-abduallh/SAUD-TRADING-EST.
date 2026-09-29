@@ -1,4 +1,5 @@
-import { ArrowLeft, Boxes, MonitorSmartphone, PackageCheck, Wheat, type LucideIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Boxes, MonitorSmartphone, PackageCheck, Wheat, ZoomIn, type LucideIcon } from "lucide-react";
 
 import saoudPort from "@/assets/saoud-port-hero.jpg";
 import { MovingBg } from "@/components/effects/MovingBg";
@@ -6,6 +7,7 @@ import { Reveal } from "@/components/effects/Reveal";
 import { SectionHeading } from "@/components/effects/SectionHeading";
 import { Tilt } from "@/components/effects/Tilt";
 import { Button } from "@/components/ui/button";
+import { ImageLightbox, type LightboxItem } from "@/components/ui/image-lightbox";
 import { products, sectors, type CategoryName, type Product, type SectorKey } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
@@ -40,6 +42,34 @@ export function Catalogue({
 }) {
     const sector = sectors[sectorKey];
     const visibleProducts: Product[] = products[category] ?? [];
+
+    // Image popup (lightbox) state: index into `gallery`, or null when closed.
+    const [activeImage, setActiveImage] = useState<number | null>(null);
+
+    // Only products that actually have a photo can open in the popup.
+    const gallery: (LightboxItem & { productIndex: number })[] = visibleProducts.flatMap((item, index) =>
+        item.image
+            ? [
+                {
+                    name: item.name,
+                    image: item.image,
+                    blurb: item.blurb,
+                    sku: `${skuPrefix[sectorKey]}-${401 + index}`,
+                    productIndex: index,
+                },
+            ]
+            : [],
+    );
+
+    const openImage = (productIndex: number) => {
+        const position = gallery.findIndex((g) => g.productIndex === productIndex);
+        if (position !== -1) setActiveImage(position);
+    };
+
+    // Close the popup whenever the sector or category changes.
+    useEffect(() => {
+        setActiveImage(null);
+    }, [sectorKey, category]);
 
     return (
         <section id="catalogue" className="relative isolate overflow-hidden bg-ink py-24 text-pearl md:py-32">
@@ -109,7 +139,7 @@ export function Catalogue({
                                 <h3 className="mt-1 text-2xl font-semibold">{category}</h3>
                             </div>
                             <span className="flex items-center gap-3">
-                                <span className="font-mono text-sm text-pearl/50">{visibleProducts.length} ITEMS</span>
+                                <span className="font-mono text-sm text-pearl/50">{visibleProducts.length} عناصر</span>
                                 <span className="gradient-bg-gold flex size-11 items-center justify-center rounded-xl text-ink">
                                     <PackageCheck size={20} />
                                 </span>
@@ -123,25 +153,34 @@ export function Catalogue({
                                     <Reveal key={item.name} delay={index * 80} className="h-full">
                                         <Tilt max={10} className="h-full rounded-2xl">
                                             <article className="glass-dark gold-border group h-full rounded-2xl p-5">
-                                                <div className="depth-sm relative mb-5 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-pearl/10 bg-linear-to-br from-navy-2 via-surface to-ink">
-                                                    {item.image ? (
+                                                {item.image ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => openImage(index)}
+                                                        aria-label={`تكبير صورة ${item.name}`}
+                                                        className="depth-sm relative mb-5 flex aspect-[4/3] w-full cursor-zoom-in items-center justify-center overflow-hidden rounded-xl border border-pearl/10 bg-linear-to-br from-navy-2 via-surface to-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+                                                    >
                                                         <img
                                                             src={item.image}
                                                             alt={item.name}
                                                             loading="lazy"
                                                             className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
                                                         />
-                                                    ) : (
-                                                        <>
-                                                            <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,oklch(0.655_0.106_75.6/0.4),transparent_62%)]" />
-                                                            <Icon
-                                                                size={46}
-                                                                strokeWidth={1.25}
-                                                                className="relative text-gold-soft transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
-                                                            />
-                                                        </>
-                                                    )}
-                                                </div>
+                                                        <span className="absolute inset-0 bg-ink/0 transition-colors duration-300 group-hover:bg-ink/25" />
+                                                        <span className="gradient-bg-gold absolute bottom-3 left-3 flex size-9 items-center justify-center rounded-full text-ink opacity-90 shadow-lg transition-transform duration-300 group-hover:scale-110">
+                                                            <ZoomIn size={17} />
+                                                        </span>
+                                                    </button>
+                                                ) : (
+                                                    <div className="depth-sm relative mb-5 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-pearl/10 bg-linear-to-br from-navy-2 via-surface to-ink">
+                                                        <span className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,oklch(0.655_0.106_75.6/0.4),transparent_62%)]" />
+                                                        <Icon
+                                                            size={46}
+                                                            strokeWidth={1.25}
+                                                            className="relative text-gold-soft transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110"
+                                                        />
+                                                    </div>
+                                                )}
                                                 <span className="depth-md block font-mono text-xs text-gold">
                                                     {skuPrefix[sectorKey]}-{401 + index}
                                                 </span>
@@ -159,6 +198,13 @@ export function Catalogue({
                     </div>
                 </div>
             </div>
+
+            <ImageLightbox
+                items={gallery}
+                index={activeImage}
+                onIndexChange={setActiveImage}
+                onClose={() => setActiveImage(null)}
+            />
         </section>
     );
 }

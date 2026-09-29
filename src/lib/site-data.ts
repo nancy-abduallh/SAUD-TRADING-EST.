@@ -5,13 +5,17 @@ import {
     Beaker,
     Bot,
     Boxes,
+    Candy,
     CircleDot,
+    Coffee,
     Container,
+    Cookie,
     Droplet,
     Droplets,
     FlaskConical,
     Handshake,
     Layers,
+    Leaf,
     Megaphone,
     MessageSquare,
     MonitorSmartphone,
@@ -51,6 +55,31 @@ import sunflowerOil from "@/assets/products/sunflower-oil.jfif"
 import cornOil from "@/assets/products/corn-oil.jfif"
 import soybeanOil from "@/assets/products/soybean-oil.jfif"
 import palmOil from "@/assets/products/palm-oil.jfif"
+import cashew from "@/assets/products/cashew.jfif"
+import AleppoPistachio from "@/assets/products/Aleppo-pistachio.jfif"
+import almond from "@/assets/products/almond.jfif"
+import walnut from "@/assets/products/walnut.jfif"
+import hazelnut from "@/assets/products/hazelnut.jfif"
+import HulledSesame from "@/assets/products/Hulled-sesame.jfif"
+import unhulledSesame from "@/assets/products/unhulled-sesame.jfif"
+import SunflowerSeeds from "@/assets/products/Sunflower-seeds.jfif"
+import FlaxSeeds from "@/assets/products/Flax-seeds.jfif"
+import BlackCumin from "@/assets/products/Black-Cumin.jfif"
+import PumpkinSeeds from "@/assets/products/Pumpkin-seeds.jfif"
+import DarkChocolate from "@/assets/products/Dark-Chocolate.jfif"
+import MilkChocolate from "@/assets/products/Milk-chocolate.jfif"
+import whiteChocolate from "@/assets/products/white-chocolate.jfif"
+import CocoaPowder from "@/assets/products/Cocoa-powder.jfif"
+import CocoaButter from "@/assets/products/Cocoa-butter.jfif"
+import ArabicaBeans from "@/assets/products/Arabica-beans.jfif"
+import RobustaBeans from "@/assets/products/Robusta-beans.jfif"
+import EthiopianCoffee from "@/assets/products/Ethiopian-coffee.jfif"
+import BrazilianCoffee from "@/assets/products/Brazilian-coffee.jfif"
+import ColombiCoffee from "@/assets/products/Colombi-coffee.jfif"
+import yemenicoffee from "@/assets/products/yemenicoffee.jfif"
+import TurkishCoffee from "@/assets/products/Turkish-coffee.jfif"
+import ArabicCoffeeCardamom from "@/assets/products/Arabic-coffee-cardamom.jfif"
+import InstantCoffee from "@/assets/products/Instant-coffee.jfif"
 import moh from "@/assets/clients/ministry-of-health.png";
 import gea from "@/assets/clients/gea.png";
 import sab from "@/assets/clients/sab.png";
@@ -71,6 +100,9 @@ import foodGradeContainers from "@/assets/products/food-containers.jfif"
 import plasticCompounds from "@/assets/products/plastic-compounds.jfif"
 import plasticAdditives from "@/assets/products/manufacturing-additives.jfif"
 import recycledPlastics from "@/assets/products/recycled-materials.jfif"
+import smartwebsites from "@/assets/products/smart-websites.jfif"
+import responsiveDesign from "@/assets/products/responsive-design.jfif"
+
 
 
 export type Product = {
@@ -109,7 +141,15 @@ export const sectors = {
         description: "سلع غذائية مختارة بعناية من مصادر دولية معتمدة.",
         image: foodSectorImage,
         imageAlt: "أرز بسمتي فاخر في وعاء تقليدي",
-        categories: ["الأرز والحبوب", "الزيوت النباتية", "البقوليات"],
+        categories: [
+            "الأرز والحبوب",
+            "الزيوت النباتية",
+            "البقوليات",
+            "البذور الزيتية",
+            "المكسرات",
+            "الشوكولاتة",
+            "البن والقهوة",
+        ],
     },
     digital: {
         title: "قطاع الحلول الرقمية",
@@ -124,11 +164,6 @@ export const sectors = {
 
 export type SectorKey = keyof typeof sectors;
 
-// ---------------------------------------------------------------------------
-// Products per category. Food expanded from 3 → 5 items per category per
-// request; plastics kept at 3; the new digital sector mirrors the same
-// category → product shape using the service line-up from the profile.
-// ---------------------------------------------------------------------------
 export const products = {
     "بوليمرات خام": [
         {
@@ -274,6 +309,77 @@ export const products = {
             image: whiteBeans,
             blurb: "توريد منتظم بأحجام تعبئة مرنة.",
         },
+
+    ],
+    "البذور الزيتية": [
+        {
+            name: "سمسم مقشر",
+            icon: Sprout,
+            image: HulledSesame,
+            blurb: "نقاء عالٍ ولون موحّد لصناعات الطحينة والحلويات والمخابز.",
+        },
+        {
+            name: "سمسم طبيعي غير مقشر",
+            icon: Sprout,
+            image: unhulledSesame,
+            blurb: "محتوى زيتي مرتفع مناسب للعصر والتصنيع الغذائي.",
+        },
+        {
+            name: "بذور دوار الشمس",
+            icon: Leaf,
+            image: SunflowerSeeds,
+            blurb: "بذور مفحوصة للتسالي والتعبئة ولاستخلاص الزيوت.",
+        },
+        {
+            name: "بذور الكتان",
+            icon: Sprout,
+            image: FlaxSeeds,
+            blurb: "بذور غنية بالأوميغا 3 لصناعات المخابز والأغذية الصحية.",
+        },
+        {
+            name: "حبة البركة",
+            icon: Leaf,
+            image: BlackCumin,
+            blurb: "بذور معتمدة ونقية للاستخدام الغذائي والعشبي وعصر الزيت.",
+        },
+        {
+            name: "بذور اليقطين",
+            icon: Nut,
+            image: PumpkinSeeds,
+            blurb: "بذور خضراء مقشرة وغير مقشرة لأسواق المكسرات والتسالي.",
+        },
+    ],
+    "المكسرات": [
+        {
+            name: "كاجو (الكاشو)",
+            icon: Nut,
+            image: cashew,
+            blurb: "أحجام متعددة بدرجات جودة تصديرية للتجزئة والتصنيع.",
+        },
+        {
+            name: "لوز",
+            icon: Nut,
+            image: almond,
+            blurb: "لوز كامل ومقطّع ومبشور بمواصفات مطابقة لمعايير الجودة.",
+        },
+        {
+            name: "فستق حلبي",
+            icon: Nut,
+            image: AleppoPistachio,
+            blurb: "فستق بقشره أو مقشر بنكهة غنية ولون أخضر مميز.",
+        },
+        {
+            name: "جوز",
+            icon: Nut,
+            image: walnut,
+            blurb: "أنصاف وأرباع جوز فاتحة اللون لصناعات الحلويات والمخبوزات.",
+        },
+        {
+            name: "بندق",
+            icon: Nut,
+            image: hazelnut,
+            blurb: "بندق نيء ومحمّص مناسب لصناعة الشوكولاتة والحلويات.",
+        },
         {
             name: "فول سوداني نيء",
             icon: Nut,
@@ -281,15 +387,106 @@ export const products = {
             blurb: "دفعات مفحوصة خالية من الشوائب والرطوبة الزائدة.",
         },
     ],
+    "الشوكولاتة": [
+        {
+            name: "شوكولاتة داكنة (كوفرتشر)",
+            icon: Candy,
+            image: DarkChocolate,
+            blurb: "نسبة كاكاو مرتفعة مخصصة للمصانع والحلواني المحترفين.",
+        },
+        {
+            name: "شوكولاتة بالحليب",
+            icon: Cookie,
+            image: MilkChocolate,
+            blurb: "قوام كريمي ونكهة متوازنة لصناعات التغليف والتغطية.",
+        },
+        {
+            name: "شوكولاتة بيضاء",
+            icon: Candy,
+            image: whiteChocolate,
+            blurb: "زبدة كاكاو أصلية للحلويات والتزيين والتغطية.",
+        },
+        {
+            name: "مسحوق الكاكاو",
+            icon: Cookie,
+            image: CocoaPowder,
+            blurb: "كاكاو طبيعي ومعالج بالقلوي للمخابز والمشروبات.",
+        },
+        {
+            name: "زبدة الكاكاو",
+            icon: Droplet,
+            image: CocoaButter,
+            blurb: "زبدة نقية لصناعات الشوكولاتة والمستحضرات التجميلية.",
+        },
+    ],
+    "البن والقهوة": [
+        {
+            name: "بن أرابيكا",
+            icon: Coffee,
+            image: ArabicaBeans,
+            blurb: "حبوب بنكهة ناعمة وحموضة متوازنة من مزارع مرتفعة.",
+        },
+        {
+            name: "بن روبوستا",
+            icon: Coffee,
+            image: RobustaBeans,
+            blurb: "قوام قوي ونسبة كافيين عالية، مناسب لخلطات الإسبريسو.",
+        },
+        {
+            name: "بن إثيوبي",
+            icon: Coffee,
+            image: EthiopianCoffee,
+            blurb: "نكهات زهرية وفاكهية مميزة من موطن القهوة الأصلي.",
+        },
+        {
+            name: "بن برازيلي",
+            icon: Coffee,
+            image: BrazilianCoffee,
+            blurb: "نكهة كراميلية وجوز، الخيار الأول لخلطات التحميص.",
+        },
+        {
+            name: "بن كولومبي",
+            icon: Coffee,
+            image: ColombiCoffee,
+            blurb: "توازن مثالي بين الحموضة والحلاوة وقوام متوسط.",
+        },
+        {
+            name: "بن يمني",
+            icon: Coffee,
+            image: yemenicoffee,
+            blurb: "بن عريق بنكهة غنية وطابع خاص للأسواق الفاخرة.",
+        },
+        {
+            name: "قهوة تركية",
+            icon: Coffee,
+            image: TurkishCoffee,
+            blurb: "طحن ناعم جداً بنكهة عالية للتحضير بالطريقة التقليدية.",
+        },
+        {
+            name: "قهوة عربية بالهيل",
+            icon: Coffee,
+            image: ArabicCoffeeCardamom,
+            blurb: "محمصة خفيفة مع الهيل، جاهزة للضيافة العربية.",
+        },
+        {
+            name: "قهوة سريعة الذوبان",
+            icon: Coffee,
+            image: InstantCoffee,
+            blurb: "قهوة فورية بتعبئة صناعية وتجزئة بمواصفات ثابتة.",
+        },
+
+    ],
     "تطوير المواقع": [
         {
             name: "مواقع ذكية تتطور مع الزوار",
             icon: MonitorSmartphone,
+            image: smartwebsites,
             blurb: "هياكل مبنية بالذكاء الاصطناعي تتكيف مع سلوك المستخدم.",
         },
         {
             name: "تصميم متجاوب وسرعة تنفيذ",
             icon: Zap,
+            image: responsiveDesign,
             blurb: "واجهات تتكيف مع كل زائر وتحسّن معدلات التحويل.",
         },
         {
