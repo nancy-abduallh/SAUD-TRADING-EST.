@@ -28,7 +28,6 @@ export function Navbar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOp
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    // While the drawer is open: Escape closes it, growing to desktop width closes it, and the page behind doesn't scroll.
     useEffect(() => {
         if (!menuOpen) return;
         const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
@@ -100,11 +99,7 @@ export function Navbar({ menuOpen, setMenuOpen }: { menuOpen: boolean; setMenuOp
                 <span ref={bar} aria-hidden className="gradient-bg-gold absolute inset-x-0 bottom-0 h-0.5 origin-right scale-x-0" />
             </nav>
 
-            {/*
-              Mobile drawer. It lives OUTSIDE <nav> on purpose: the nav has a backdrop-filter, and that would make
-              "fixed" children position themselves against the nav bar instead of the screen.
-              It is pinned to the right edge and slides in toward the left.
-            */}
+
             <div
                 aria-hidden
                 onClick={close}

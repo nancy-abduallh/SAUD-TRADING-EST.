@@ -30,7 +30,8 @@ export function SectorsGrid({ onSelect }: { onSelect: (key: SectorKey) => void }
                         }
                         description="هيكل واضح يوصلك من القطاع إلى التصنيف ثم المنتج أو الخدمة المطلوبة."
                     >
-                        <Button variant="outline" asChild>
+
+                        <Button variant="outline" asChild className="w-fit self-end md:self-auto">
                             <a href="#catalogue">
                                 عرض الكتالوج <ArrowLeft size={16} />
                             </a>

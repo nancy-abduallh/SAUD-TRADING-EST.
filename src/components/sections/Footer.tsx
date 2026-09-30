@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { countries, sectors, type SectorKey } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
-// Fill these in to show them in the footer + CTA. Empty values are hidden.
 const CONTACT = { email: "", phone: "" };
 
 const QUICK_LINKS = [
@@ -20,11 +19,7 @@ const QUICK_LINKS = [
     { href: "#about", label: "عن الشركة" },
 ];
 
-/**
- * Footer column.
- * Mobile (< md): the <h3> is a button — tap it and the <ul> slides open/closed (accordion).
- * Desktop (md+): always open, the heading is a normal, non-clickable title.
- */
+
 function FooterColumn({ title, children }: { title: string; children: ReactNode }) {
     const [open, setOpen] = useState(false);
     const panelId = useId();
