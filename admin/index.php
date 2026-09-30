@@ -1,366 +1,123 @@
 <?php
-require_once 'auth.php';
+require_once __DIR__ . '/auth.php';
 $pageTitle = 'Dashboard';
-$currentPage = 'index.php';
+$active = 'index';
+$useCharts = true;
 
-// Helper function in case getCount is not available globally
-if (!function_exists('getCount')) {
-    function getCount($conn, $table, $condition = '') {
-        $sql = "SELECT COUNT(*) as count FROM $table";
-        if (!empty($condition)) {
-            $sql .= " WHERE $condition";
-        }
-        $result = $conn->query($sql);
-        if ($result) {
-            $row = $result->fetch_assoc();
-            return $row['count'];
-        }
-        return 0;
-    }
-}
-
-// Fetch dashboard data
-$totalServices = getCount($conn, 'services');
-$totalBrands = getCount($conn, 'brands');
-$totalClients = getCount($conn, 'clients');
-$totalTestimonials = getCount($conn, 'testimonials');
-$totalProducts = getCount($conn, 'products');
-$unreadMessages = getCount($conn, 'contact_messages', 'is_read = 0');
-$totalMessages = getCount($conn, 'contact_messages');
-$totalSectors = getCount($conn, 'sectors');
-$totalFaqs = getCount($conn, 'faqs');
-
-$totalContent = $totalServices + $totalBrands + $totalClients + $totalProducts;
-
-// Fetch recent messages
-$recentMessages = $conn->query("SELECT * FROM contact_messages ORDER BY created_at DESC LIMIT 5");
-
-// Fetch recent activity (Assuming activity_log exists, ignore errors if it doesn't)
-$recentActivity = null;
-if ($conn->query("SHOW TABLES LIKE 'activity_log'")->num_rows > 0) {
-    $recentActivity = $conn->query("SELECT al.*, a.username FROM activity_log al LEFT JOIN admins a ON al.admin_id = a.id ORDER BY al.created_at DESC LIMIT 10");
-}
-
-// Monthly messages data for chart
-$monthlyMessages = $conn->query("SELECT DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as count FROM contact_messages GROUP BY month ORDER BY month DESC LIMIT 12");
-$monthlyData = [];
-if ($monthlyMessages) {
-    while ($row = $monthlyMessages->fetch_assoc()) { 
-        $monthlyData[] = $row; 
-    }
-    $monthlyData = array_reverse($monthlyData);
-}
-
-// Content distribution for doughnut chart
-$contentDist = [
-    ['label' => 'Services', 'count' => $totalServices],
-    ['label' => 'Brands', 'count' => $totalBrands],
-    ['label' => 'Clients', 'count' => $totalClients],
-    ['label' => 'Products', 'count' => $totalProducts],
-    ['label' => 'Testimonials', 'count' => $totalTestimonials],
-    ['label' => 'FAQs', 'count' => $totalFaqs],
+$kpis = [
+    ['Sectors', 'sectors', 'services.php', 'layers'],
+    ['Categories', 'categories', 'categories.php', 'folder'],
+    ['Products', 'products', 'products.php', 'package'],
+    ['Clients', 'clients', 'clients.php', 'handshake'],
+    ['Brands', 'brands', 'brands.php', 'award'],
+    ['Testimonials', 'testimonials', 'testimonials.php', 'quote'],
+    ['Countries', 'countries', 'countries.php', 'globe'],
 ];
+$counts = [];
+foreach ($kpis as $k) $counts[$k[1]] = (int)val("SELECT COUNT(*) FROM `{$k[1]}`");
+$unread = (int)val('SELECT COUNT(*) FROM contact_messages WHERE is_read = 0');
+
+// Messages per month (last 6)
+$months = [];
+for ($i = 5; $i >= 0; $i--) $months[date('Y-m', strtotime("first day of -$i month"))] = 0;
+foreach (rows("SELECT DATE_FORMAT(created_at,'%Y-%m') ym, COUNT(*) c FROM contact_messages
+               WHERE created_at >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 5 MONTH), '%Y-%m-01') GROUP BY ym") as $r) {
+    if (isset($months[$r['ym']])) $months[$r['ym']] = (int)$r['c'];
+}
+$perCat = rows('SELECT c.name, COUNT(p.id) n FROM categories c LEFT JOIN products p ON p.category_id = c.id
+                GROUP BY c.id ORDER BY c.sector_id, c.sort_order');
+$perSector = rows('SELECT s.title, COUNT(p.id) n FROM sectors s LEFT JOIN categories c ON c.sector_id = s.id
+                   LEFT JOIN products p ON p.category_id = c.id GROUP BY s.id ORDER BY s.sort_order');
+$ratings = array_fill(1, 5, 0);
+foreach (rows('SELECT rating, COUNT(*) n FROM testimonials GROUP BY rating') as $r) $ratings[(int)$r['rating']] = (int)$r['n'];
+
+$activity = rows('SELECT l.*, a.username FROM activity_log l LEFT JOIN admins a ON a.id = l.admin_id ORDER BY l.id DESC LIMIT 8');
+
+// site-data sync check (expected counts from site-data)
+$expected = ['sectors' => 3, 'categories' => 13, 'products' => 57, 'site_values' => 6, 'digital_ecosystem' => 4,
+    'comparison_rows' => 4, 'clients' => 11, 'countries' => 3, 'stats' => 4];
+$sync = [];
+foreach ($expected as $t => $n) $sync[$t] = [$n, (int)val("SELECT COUNT(*) FROM `$t`")];
+
+$defaultPw = password_verify('admin123', (string)val('SELECT password_hash FROM admins WHERE id = ?', [(int)$ADMIN['id']]));
+
+require __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle) ?> | SAUD-TRADING-EST Admin</title>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/dashboard.css">
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-<div class="dashboard-layout">
-    <?php include 'includes/sidebar.php'; ?>
-    <main class="main-content">
-        <?php include 'includes/header.php'; ?>
-        <div class="content-area">
-            
-            <!-- KPI Cards Section -->
-            <div class="kpi-grid">
-                <div class="kpi-card kpi-card--blue">
-                    <div class="kpi-icon"><i class="fa-solid fa-layer-group"></i></div>
-                    <div class="kpi-info">
-                        <div class="kpi-value" data-count="<?= $totalContent ?>">0</div>
-                        <div class="kpi-label">Total Content</div>
-                    </div>
-                    <div class="kpi-trend kpi-trend--up"><i class="fa-solid fa-arrow-up"></i> Active</div>
-                </div>
+<?php if ($defaultPw): ?>
+  <div class="alert warn">You are still using the default password. <a href="profile.php"><b>Change it now →</b></a></div>
+<?php endif; ?>
 
-                <div class="kpi-card kpi-card--teal">
-                    <div class="kpi-icon"><i class="fa-solid fa-chart-pie"></i></div>
-                    <div class="kpi-info">
-                        <div class="kpi-value" data-count="<?= $totalSectors ?>">0</div>
-                        <div class="kpi-label">Active Sectors</div>
-                    </div>
-                    <div class="kpi-trend kpi-trend--up"><i class="fa-solid fa-arrow-up"></i> Active</div>
-                </div>
-
-                <div class="kpi-card kpi-card--purple">
-                    <div class="kpi-icon"><i class="fa-solid fa-envelope"></i></div>
-                    <div class="kpi-info">
-                        <div class="kpi-value" data-count="<?= $totalMessages ?>">0</div>
-                        <div class="kpi-label">Messages <?php if($unreadMessages > 0): ?><span class="badge badge-unread"><?= $unreadMessages ?> New</span><?php endif; ?></div>
-                    </div>
-                    <div class="kpi-trend kpi-trend--up"><i class="fa-solid fa-arrow-up"></i> Active</div>
-                </div>
-
-                <div class="kpi-card kpi-card--gold">
-                    <div class="kpi-icon"><i class="fa-solid fa-star"></i></div>
-                    <div class="kpi-info">
-                        <div class="kpi-value" data-count="<?= $totalTestimonials ?>">0</div>
-                        <div class="kpi-label">Testimonials</div>
-                    </div>
-                    <div class="kpi-trend kpi-trend--up"><i class="fa-solid fa-arrow-up"></i> Active</div>
-                </div>
-            </div>
-
-            <!-- Quick Actions Panel -->
-            <div class="quick-actions-panel" style="margin-bottom: 2rem;">
-                <h3>Quick Actions</h3>
-                <div class="quick-actions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                    <a href="heroes.php?action=add" class="quick-action-card" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; color: var(--text-color); text-decoration: none; display: block; border: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fa-solid fa-images" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #4fc3f7;"></i>
-                        <span style="display: block; font-size: 0.875rem;">Add Hero Slide</span>
-                    </a>
-                    <a href="services.php?action=add" class="quick-action-card" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; color: var(--text-color); text-decoration: none; display: block; border: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fa-solid fa-briefcase" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #00e5ff;"></i>
-                        <span style="display: block; font-size: 0.875rem;">Add Service</span>
-                    </a>
-                    <a href="brands.php?action=add" class="quick-action-card" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; color: var(--text-color); text-decoration: none; display: block; border: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fa-solid fa-tags" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #7c4dff;"></i>
-                        <span style="display: block; font-size: 0.875rem;">Add Brand</span>
-                    </a>
-                    <a href="messages.php" class="quick-action-card" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; color: var(--text-color); text-decoration: none; display: block; border: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fa-solid fa-inbox" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #ffd740;"></i>
-                        <span style="display: block; font-size: 0.875rem;">View Messages</span>
-                    </a>
-                    <a href="settings.php" class="quick-action-card" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; color: var(--text-color); text-decoration: none; display: block; border: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fa-solid fa-gear" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #ff5252;"></i>
-                        <span style="display: block; font-size: 0.875rem;">Site Settings</span>
-                    </a>
-                    <a href="../" target="_blank" class="quick-action-card" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; text-align: center; color: var(--text-color); text-decoration: none; display: block; border: 1px solid rgba(255,255,255,0.1);">
-                        <i class="fa-solid fa-globe" style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #69f0ae;"></i>
-                        <span style="display: block; font-size: 0.875rem;">View Site</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Charts Section -->
-            <div class="chart-grid">
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3>Messages Trend</h3>
-                        <select class="chart-period">
-                            <option value="12m">Last 12 Months</option>
-                            <option value="6m">Last 6 Months</option>
-                        </select>
-                    </div>
-                    <div class="chart-body">
-                        <canvas id="messagesChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3>Content Distribution</h3>
-                    </div>
-                    <div class="chart-body">
-                        <canvas id="contentChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom Row -->
-            <div class="bottom-row-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-                <div class="recent-messages-panel panel" style="background: rgba(30, 41, 59, 0.7); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
-                    <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h3 style="margin: 0; font-size: 1.1rem; color: #e2e8f0;">Recent Messages</h3>
-                        <a href="messages.php" class="btn btn-sm btn-outline" style="text-decoration: none; font-size: 0.875rem; color: #4fc3f7; border: 1px solid #4fc3f7; padding: 0.25rem 0.5rem; border-radius: 4px;">View All</a>
-                    </div>
-                    <div class="panel-body">
-                        <div class="table-responsive" style="overflow-x: auto;">
-                            <table class="table" style="width: 100%; border-collapse: collapse; text-align: left; color: #94a3b8;">
-                                <thead>
-                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                                        <th style="padding: 0.75rem 0.5rem; font-weight: 500;">Sender</th>
-                                        <th style="padding: 0.75rem 0.5rem; font-weight: 500;">Email</th>
-                                        <th style="padding: 0.75rem 0.5rem; font-weight: 500;">Subject</th>
-                                        <th style="padding: 0.75rem 0.5rem; font-weight: 500;">Date</th>
-                                        <th style="padding: 0.75rem 0.5rem; font-weight: 500;">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if($recentMessages && $recentMessages->num_rows > 0): ?>
-                                        <?php while($msg = $recentMessages->fetch_assoc()): ?>
-                                            <tr onclick="window.location='messages.php?id=<?= $msg['id'] ?>'" style="cursor:pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.3s;">
-                                                <td style="padding: 0.75rem 0.5rem;"><?= htmlspecialchars($msg['name']) ?></td>
-                                                <td style="padding: 0.75rem 0.5rem;"><?= htmlspecialchars($msg['email']) ?></td>
-                                                <td style="padding: 0.75rem 0.5rem;"><?= htmlspecialchars($msg['subject']) ?></td>
-                                                <td style="padding: 0.75rem 0.5rem;"><?= date('M d, Y', strtotime($msg['created_at'])) ?></td>
-                                                <td style="padding: 0.75rem 0.5rem;">
-                                                    <?php if($msg['is_read'] == 0): ?>
-                                                        <span class="badge badge-unread" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem;">Unread</span>
-                                                    <?php else: ?>
-                                                        <span class="badge badge-read" style="background: rgba(34, 197, 94, 0.2); color: #22c55e; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem;">Read</span>
-                                                    <?php endif; ?>
-                                                </td>
-                                            </tr>
-                                        <?php endwhile; ?>
-                                    <?php else: ?>
-                                        <tr>
-                                            <td colspan="5" class="text-center" style="padding: 1rem; text-align: center;">No recent messages</td>
-                                        </tr>
-                                    <?php endif; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="activity-feed-panel panel" style="background: rgba(30, 41, 59, 0.7); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem;">
-                    <div class="panel-header" style="margin-bottom: 1rem;">
-                        <h3 style="margin: 0; font-size: 1.1rem; color: #e2e8f0;">Recent Activity</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div class="activity-feed" style="position: relative; padding-left: 1.5rem;">
-                            <?php if($recentActivity && $recentActivity->num_rows > 0): ?>
-                                <?php while($log = $recentActivity->fetch_assoc()): ?>
-                                    <div class="activity-item" style="position: relative; padding-bottom: 1rem;">
-                                        <div class="activity-icon" style="position: absolute; left: -1.5rem; top: 0; color: #7c4dff; background: #0f172a; border-radius: 50%;">
-                                            <i class="fa-solid fa-clock-rotate-left"></i>
-                                        </div>
-                                        <div class="activity-content">
-                                            <div class="activity-text" style="color: #cbd5e1; font-size: 0.9rem;">
-                                                <strong style="color: #e2e8f0;"><?= htmlspecialchars($log['username'] ?? 'System') ?></strong> <?= htmlspecialchars($log['action']) ?>
-                                            </div>
-                                            <div class="activity-time" style="color: #64748b; font-size: 0.75rem; margin-top: 0.25rem;">
-                                                <?= date('M d, Y H:i', strtotime($log['created_at'])) ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php endwhile; ?>
-                            <?php else: ?>
-                                <div class="activity-item">
-                                    <div class="activity-content">
-                                        <div class="activity-text" style="color: #94a3b8; font-size: 0.9rem;">No recent activity</div>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <?php
-            $pageScripts = '
-            <script>
-            const monthlyLabels = ' . json_encode(array_column($monthlyData, 'month')) . ';
-            const monthlyValues = ' . json_encode(array_map("intval", array_column($monthlyData, 'count'))) . ';
-            const contentLabels = ' . json_encode(array_column($contentDist, 'label')) . ';
-            const contentValues = ' . json_encode(array_column($contentDist, 'count')) . ';
-
-            function animateCounters() {
-                const counters = document.querySelectorAll(".kpi-value");
-                counters.forEach(counter => {
-                    const target = +counter.getAttribute("data-count");
-                    const duration = 1000;
-                    const step = target / (duration / 16);
-                    
-                    let current = 0;
-                    const updateCounter = () => {
-                        current += step;
-                        if(current < target) {
-                            counter.innerText = Math.ceil(current);
-                            requestAnimationFrame(updateCounter);
-                        } else {
-                            counter.innerText = target;
-                        }
-                    };
-                    updateCounter();
-                });
-            }
-
-            function initDashboardCharts(mLabels, mValues, cLabels, cValues) {
-                // Messages Chart
-                const msgCtx = document.getElementById("messagesChart");
-                if (msgCtx) {
-                    new Chart(msgCtx, {
-                        type: "line",
-                        data: {
-                            labels: mLabels,
-                            datasets: [{
-                                label: "Messages",
-                                data: mValues,
-                                borderColor: "#4fc3f7",
-                                backgroundColor: "rgba(79, 195, 247, 0.1)",
-                                tension: 0.4,
-                                fill: true
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { display: false }
-                            },
-                            scales: {
-                                y: { beginAtZero: true, grid: { color: "rgba(255, 255, 255, 0.1)" }, ticks: { color: "#94a3b8" } },
-                                x: { grid: { color: "rgba(255, 255, 255, 0.1)" }, ticks: { color: "#94a3b8" } }
-                            }
-                        }
-                    });
-                }
-
-                // Content Chart
-                const contentCtx = document.getElementById("contentChart");
-                if (contentCtx) {
-                    new Chart(contentCtx, {
-                        type: "doughnut",
-                        data: {
-                            labels: cLabels,
-                            datasets: [{
-                                data: cValues,
-                                backgroundColor: [
-                                    "#4fc3f7", "#00e5ff", "#7c4dff", "#ffd740", "#ff5252", "#69f0ae"
-                                ],
-                                borderWidth: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: { position: "right", labels: { color: "#e2e8f0" } }
-                            }
-                        }
-                    });
-                }
-            }
-
-            document.addEventListener("DOMContentLoaded", function() {
-                initDashboardCharts(monthlyLabels, monthlyValues, contentLabels, contentValues);
-                animateCounters();
-            });
-            </script>';
-            ?>
-
-        </div>
-        <?php include 'includes/footer.php'; ?>
-    </main>
+<div class="kpi-grid">
+  <?php foreach ($kpis as $k): ?>
+    <a class="card kpi glow-hover" href="<?= e($k[2]) ?>">
+      <span class="kpi-ic"><i data-lucide="<?= e($k[3]) ?>"></i></span>
+      <div><div class="kpi-n" data-count="<?= $counts[$k[1]] ?>">0</div><div class="muted"><?= e($k[0]) ?></div></div>
+    </a>
+  <?php endforeach; ?>
+  <a class="card kpi glow-hover<?= $unread ? ' alert-kpi' : '' ?>" href="messages.php">
+    <span class="kpi-ic"><i data-lucide="mail"></i></span>
+    <div><div class="kpi-n" data-count="<?= $unread ?>">0</div><div class="muted">Unread messages</div></div>
+  </a>
 </div>
-</body>
-</html>
+
+<div class="grid-2">
+  <div class="card pad"><h3>Messages · last 6 months</h3><div class="chart-box"><canvas id="chMsgs"></canvas></div></div>
+  <div class="card pad"><h3>Products per sector</h3><div class="chart-box"><canvas id="chSector"></canvas></div></div>
+</div>
+<div class="grid-2">
+  <div class="card pad"><h3>Products per category</h3><div class="chart-box tall"><canvas id="chCat"></canvas></div></div>
+  <div class="card pad"><h3>Testimonial ratings</h3><div class="chart-box"><canvas id="chRate"></canvas></div></div>
+</div>
+
+<div class="grid-3">
+  <div class="card pad">
+    <h3>Quick actions</h3>
+    <div class="quick">
+      <a class="btn" href="products.php"><i data-lucide="plus"></i> Product</a>
+      <a class="btn" href="clients.php"><i data-lucide="plus"></i> Client</a>
+      <a class="btn" href="hero.php"><i data-lucide="plus"></i> Hero slide</a>
+      <a class="btn" href="faqs.php"><i data-lucide="plus"></i> FAQ</a>
+      <a class="btn" href="settings.php"><i data-lucide="settings"></i> Settings</a>
+      <a class="btn" href="public_api.php" target="_blank"><i data-lucide="code"></i> JSON API</a>
+    </div>
+    <h3 class="mt">System status</h3>
+    <ul class="status">
+      <li><span class="ok"></span> MySQL <?= e(db()->server_info) ?></li>
+      <li><span class="<?= PHP_VERSION_ID >= 80000 ? 'ok' : 'bad' ?>"></span> PHP <?= e(PHP_VERSION) ?></li>
+      <li><span class="<?= is_writable(UPLOAD_PATH) ? 'ok' : 'bad' ?>"></span> uploads/ <?= is_writable(UPLOAD_PATH) ? 'writable' : 'NOT writable' ?></li>
+      <li><span class="<?= extension_loaded('fileinfo') ? 'ok' : 'bad' ?>"></span> fileinfo extension</li>
+    </ul>
+  </div>
+  <div class="card pad">
+    <h3>Site-data sync</h3>
+    <table class="data-table compact">
+      <thead><tr><th>Table</th><th>Expected</th><th>In DB</th><th></th></tr></thead>
+      <tbody>
+      <?php foreach ($sync as $t => [$exp, $got]): ?>
+        <tr><td><?= e($t) ?></td><td><?= $exp ?></td><td><?= $got ?></td>
+            <td><?= $got >= $exp ? '<span class="tick">✓</span>' : '<span class="cross">✗ missing</span>' ?></td></tr>
+      <?php endforeach; ?>
+      </tbody>
+    </table>
+  </div>
+  <div class="card pad">
+    <h3>Recent activity</h3>
+    <ul class="feed">
+      <?php foreach ($activity as $a): ?>
+        <li><b><?= e($a['action']) ?></b> <span class="muted" dir="auto"><?= e($a['details']) ?></span>
+            <small class="muted"><?= e($a['username'] ?? 'system') ?> · <?= e($a['created_at']) ?></small></li>
+      <?php endforeach; ?>
+      <?php if (!$activity): ?><li class="muted">No activity yet.</li><?php endif; ?>
+    </ul>
+  </div>
+</div>
+
+<script>
+window.DASH = {
+  msgs: { labels: <?= json_encode(array_keys($months)) ?>, data: <?= json_encode(array_values($months)) ?> },
+  perCat: { labels: <?= json_encode(array_column($perCat, 'name'), JSON_UNESCAPED_UNICODE) ?>, data: <?= json_encode(array_map('intval', array_column($perCat, 'n'))) ?> },
+  perSector: { labels: <?= json_encode(array_column($perSector, 'title'), JSON_UNESCAPED_UNICODE) ?>, data: <?= json_encode(array_map('intval', array_column($perSector, 'n'))) ?> },
+  ratings: <?= json_encode(array_values($ratings)) ?>
+};
+</script>
+<?php require __DIR__ . '/includes/footer.php'; ?>

@@ -1,4 +1,4 @@
 <?php
-$module = 'faqs';
+$module = 'stats';
 require __DIR__ . '/includes/crud_page.php';
 
