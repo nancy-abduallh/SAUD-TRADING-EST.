@@ -121,7 +121,7 @@ export function HeroSlider() {
                 </div>
             </div>
 
-            <div className="absolute inset-x-0 bottom-32 z-20 flex items-center justify-center gap-2">
+            <div className="absolute inset-x-0 bottom-24 z-20 flex items-center justify-center gap-2 md:bottom-32">
                 {slides.map((slide, index) => (
                     <button
                         key={slide.alt}
@@ -151,7 +151,7 @@ export function HeroSlider() {
 
             <a href="#sectors"
                 aria-label="انتقل إلى القطاعات"
-                className="absolute bottom-20 left-1/2 z-20 -translate-x-1/2 text-pearl"
+                className="absolute bottom-20 left-1/2 z-20 hidden -translate-x-1/2 text-pearl md:block"
             >
                 <ChevronDown className="animate-bounce" />
             </a>

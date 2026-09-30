@@ -102,6 +102,13 @@ import plasticAdditives from "@/assets/products/manufacturing-additives.jfif"
 import recycledPlastics from "@/assets/products/recycled-materials.jfif"
 import smartwebsites from "@/assets/products/smart-websites.jfif"
 import responsiveDesign from "@/assets/products/responsive-design.jfif"
+import seo from "@/assets/products/seo.jfif"
+import socialMedia from "@/assets/products/social-media.jfif"
+import paidAds from "@/assets/products/paid-ads.jfif"
+import microTargeting from "@/assets/products/micro-targeting.jfif"
+import visualIdentity from "@/assets/products/visual-identity.jfif"
+import aiLogos from "@/assets/products/ai-logos.jfif"
+import videoVr from "@/assets/products/video-vr.jfif"
 
 
 
@@ -492,6 +499,7 @@ export const products = {
         {
             name: "تحسين محركات البحث SEO",
             icon: Radar,
+            image: seo,
             blurb: "محتوى محسّن تلقائياً لضمان ظهور قوي في نتائج البحث.",
         },
     ],
@@ -499,16 +507,19 @@ export const products = {
         {
             name: "إدارة تواصل اجتماعي 24/7",
             icon: MessageSquare,
+            image: socialMedia,
             blurb: "تواجد دائم وتفاعل ذكي بجودة بشرية على مدار الساعة.",
         },
         {
             name: "إعلانات ممولة بدقة استهداف",
             icon: Target,
+            image: paidAds,
             blurb: "أقصى عائد على الاستثمار عبر استهداف آلي دقيق.",
         },
         {
             name: "استهداف دقيق Micro-Targeting",
             icon: Megaphone,
+            image: microTargeting,
             blurb: "تحديد الجمهور الأكثر احتمالاً للشراء من بين الملايين.",
         },
     ],
@@ -516,16 +527,19 @@ export const products = {
         {
             name: "تصميم هوية بصرية",
             icon: Palette,
+            image: visualIdentity,
             blurb: "هويات تدمج الحس الفني بتحليل اتجاهات السوق.",
         },
         {
             name: "شعارات ذكية بالذكاء الاصطناعي",
             icon: Wand2,
+            image: aiLogos,
             blurb: "تصاميم فريدة تعكس هوية علامتك بسرعة إنتاج عالية.",
         },
         {
             name: "فيديو وواقع افتراضي",
             icon: Video,
+            image: videoVr,
             blurb: "إنتاج ضخم بتقنية الواقع الافتراضي لمحتوى استثنائي.",
         },
     ],
