@@ -10,7 +10,7 @@ function render_field(array $f, array $lookups = [], $val = null): void
     $full = in_array($t, ['textarea', 'image'], true) ? ' full' : '';
     echo "<div class=\"field$full\">";
     if ($t !== 'toggle') {
-        echo '<label for="f_' . $n . '">' . e($f['label']) . (!empty($f['required']) ? ' <b>*</b>' : '') . '</label>';
+        echo '<label for="f_' . $n . '">' . e(__($f['label'])) . (!empty($f['required']) ? ' <b>*</b>' : '') . '</label>';
     }
     switch ($t) {
         case 'textarea':
@@ -28,7 +28,7 @@ function render_field(array $f, array $lookups = [], $val = null): void
             echo '</select>';
             break;
         case 'select':
-            echo "<select id=\"f_$n\" name=\"$n\" $req><option value=\"\">— choose —</option>";
+            echo "<select id=\"f_$n\" name=\"$n\" $req><option value=\"\">" . e(__('choose')) . "</option>";
             foreach (($lookups[$f['name']] ?? []) as $id => $label) {
                 $sel = ((string)$val === (string)$id) ? ' selected' : '';
                 echo "<option value=\"" . (int)$id . "\"$sel>" . e($label) . '</option>';
@@ -38,24 +38,24 @@ function render_field(array $f, array $lookups = [], $val = null): void
         case 'toggle':
             $on = ($val === null) ? true : ((string)$val === '1');
             echo '<label class="switch-row"><span class="switch"><input type="checkbox" name="' . $n . '" value="1"'
-                . ($on ? ' checked' : '') . '><i></i></span> ' . e($f['label']) . '</label>';
+                . ($on ? ' checked' : '') . '><i></i></span> ' . e(__($f['label'])) . '</label>';
             break;
         case 'image':
             $src = $val ? e(media_url((string)$val)) : '';
             echo '<div class="img-field"><img class="img-preview" src="' . $src . '" alt=""' . ($src ? '' : ' hidden') . '>'
                 . '<div><input type="hidden" name="' . $n . '" value="' . $v . '">'
                 . '<input type="file" id="f_' . $n . '" name="' . $n . '__file" accept="image/*" class="file-input">'
-                . '<small class="muted">JPG, PNG, WEBP, GIF · max 5 MB</small></div></div>';
+                . '<small class="muted">' . e(__('image_upload_help', 'JPG, PNG, WEBP, GIF · max 5 MB')) . '</small></div></div>';
             break;
         case 'icon':
             echo '<div class="icon-field"><span class="icon-preview"><i data-lucide="' . e(kebab((string)$val)) . '"></i></span>'
-                . "<input list=\"iconList\" id=\"f_$n\" name=\"$n\" value=\"$v\" placeholder=\"e.g. Boxes\" autocomplete=\"off\"></div>";
+                . "<input list=\"iconList\" id=\"f_$n\" name=\"$n\" value=\"$v\" placeholder=\"" . e(__('e.g. Boxes')) . "\" autocomplete=\"off\"></div>";
             break;
         default:
             $type = in_array($t, ['url', 'email'], true) ? $t : 'text';
             echo "<input type=\"$type\" id=\"f_$n\" name=\"$n\" value=\"$v\" dir=\"auto\" $req>";
     }
-    if (!empty($f['help'])) echo '<small class="muted">' . e($f['help']) . '</small>';
+    if (!empty($f['help'])) echo '<small class="muted">' . e(__($f['help'])) . '</small>';
     echo '</div>';
 }
 
@@ -72,7 +72,9 @@ function cell(array $f, array $r, array $lookups): string
         case 'rating':
             return '<span class="stars">' . stars((int)$v) . '</span>';
         case 'toggle':
-            return $v ? 'Yes' : 'No';
+            return $v ? e(__('Yes')) : e(__('No'));
+        case 'textarea':
+            return '<span dir="auto" title="' . e((string)$v) . '">' . e(mb_strimwidth((string)$v, 0, 90, '…')) . '</span>';
         default:
             return '<span dir="auto">' . e(mb_strimwidth((string)$v, 0, 70, '…')) . '</span>';
     }

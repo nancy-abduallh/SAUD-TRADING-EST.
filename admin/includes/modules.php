@@ -9,7 +9,7 @@ return [
         'fields' => [
             fld('title', 'Title', 'text', ['required' => 1, 'list' => 1]),
             fld('subtitle', 'Subtitle', 'text', ['list' => 1]),
-            fld('description', 'Description', 'textarea'),
+            fld('description', 'Description', 'textarea', ['list' => 1]),
             fld('image_url', 'Image', 'image', ['list' => 1]),
             fld('cta_text', 'Button text'),
             fld('cta_link', 'Button link'),

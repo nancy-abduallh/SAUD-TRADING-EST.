@@ -10,18 +10,18 @@ foreach ($msgs as $r) $byId[$r['id']] = $r;
 require __DIR__ . '/includes/header.php';
 ?>
 <div class="page-head">
-  <div><h2>Contact messages</h2><p class="muted"><?= count($msgs) ?> total · click a row to read</p></div>
+  <div><h2><?= e(__('contact_messages')) ?></h2><p class="muted"><?= count($msgs) ?> <?= e(__('messages_total_hint')) ?></p></div>
   <div class="tabs">
-    <button class="active" data-tab="all">All</button>
-    <button data-tab="unread">Unread</button>
-    <button data-tab="read">Read</button>
+    <button class="active" data-tab="all"><?= e(__('All')) ?></button>
+    <button data-tab="unread"><?= e(__('unread_tab')) ?></button>
+    <button data-tab="read"><?= e(__('read_tab')) ?></button>
   </div>
 </div>
 
 <div class="card">
   <div class="table-wrap">
     <table class="data-table" id="dataTable">
-      <thead><tr><th class="w-s"></th><th>From</th><th>Subject</th><th>Email</th><th>Received</th></tr></thead>
+      <thead><tr><th class="w-s"></th><th><?= e(__('From')) ?></th><th><?= e(__('Subject')) ?></th><th><?= e(__('Email')) ?></th><th><?= e(__('Received')) ?></th></tr></thead>
       <tbody>
       <?php foreach ($msgs as $r): ?>
         <tr data-msg="<?= (int)$r['id'] ?>" data-read="<?= (int)$r['is_read'] ?>" class="clickable<?= $r['is_read'] ? '' : ' unread' ?>">
@@ -32,7 +32,7 @@ require __DIR__ . '/includes/header.php';
           <td class="muted"><?= e($r['created_at']) ?></td>
         </tr>
       <?php endforeach; ?>
-      <?php if (!$msgs): ?><tr><td colspan="5" class="empty">No messages yet. Messages sent through public_api.php (POST) appear here.</td></tr><?php endif; ?>
+      <?php if (!$msgs): ?><tr><td colspan="5" class="empty"><?= e(__('no_messages_yet')) ?></td></tr><?php endif; ?>
       </tbody>
     </table>
   </div>
@@ -47,9 +47,9 @@ require __DIR__ . '/includes/header.php';
     </div>
     <div class="msg-body" id="mBody" dir="auto"></div>
     <div class="modal-foot">
-      <button class="btn btn-danger" id="mDelete" type="button"><i data-lucide="trash-2"></i> Delete</button>
-      <button class="btn" id="mUnread" type="button">Mark unread</button>
-      <a class="btn btn-primary" id="mReply" href="#"><i data-lucide="reply"></i> Reply by email</a>
+      <button class="btn btn-danger" id="mDelete" type="button"><i data-lucide="trash-2"></i> <?= e(__('Delete')) ?></button>
+      <button class="btn" id="mUnread" type="button"><?= e(__('Mark unread')) ?></button>
+      <a class="btn btn-primary" id="mReply" href="#"><i data-lucide="reply"></i> <?= e(__('Reply by email')) ?></a>
     </div>
   </div>
 </div>

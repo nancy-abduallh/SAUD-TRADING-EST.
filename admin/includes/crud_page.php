@@ -29,19 +29,19 @@ require __DIR__ . '/header.php';
 ?>
 <div class="page-head">
   <div>
-    <h2><?= e($m['title']) ?></h2>
-    <p class="muted"><?= count($data) ?> records<?= !empty($m['sortable']) ? ' · drag rows to reorder' : '' ?></p>
+    <h2><?= e(__($m['title'])) ?></h2>
+    <p class="muted"><?= count($data) ?> <?= e(__('records')) ?><?= !empty($m['sortable']) ? ' · ' . e(__('drag_reorder')) : '' ?></p>
   </div>
   <div class="actions">
     <?php if ($filter): ?>
       <select id="filterSel" class="select-sm">
-        <option value="">All <?= e(strtolower($filter['label'])) ?>s</option>
+        <option value=""><?= e(__('All')) ?> <?= e(__($filter['label'])) ?></option>
         <?php foreach ($lookups[$filter['name']] as $id => $label): ?>
           <option value="<?= (int)$id ?>"><?= e($label) ?></option>
         <?php endforeach; ?>
       </select>
     <?php endif; ?>
-    <button class="btn btn-primary" data-add><i data-lucide="plus"></i> Add <?= e($m['singular']) ?></button>
+    <button class="btn btn-primary" data-add><i data-lucide="plus"></i> <?= e(__('Add')) ?> <?= e(__($m['singular'])) ?></button>
   </div>
 </div>
 
@@ -52,9 +52,9 @@ require __DIR__ . '/header.php';
         <tr>
           <?php if (!empty($m['sortable'])): ?><th class="w-s"></th><?php endif; ?>
           <th class="w-s">#</th>
-          <?php foreach ($listFields as $f): ?><th><?= e($f['label']) ?></th><?php endforeach; ?>
-          <?php if (!empty($m['toggle'])): ?><th>Status</th><?php endif; ?>
-          <th class="w-a">Actions</th>
+          <?php foreach ($listFields as $f): ?><th><?= e(__($f['label'])) ?></th><?php endforeach; ?>
+          <?php if (!empty($m['toggle'])): ?><th><?= e(__('Status')) ?></th><?php endif; ?>
+          <th class="w-a"><?= e(__('Actions')) ?></th>
         </tr>
       </thead>
       <tbody>
@@ -69,13 +69,13 @@ require __DIR__ . '/header.php';
               <td><label class="switch"><input type="checkbox" class="tg" <?= $r[$m['toggle']] ? 'checked' : '' ?>><i></i></label></td>
             <?php endif; ?>
             <td class="row-actions">
-              <button class="icon-btn" data-edit title="Edit"><i data-lucide="pencil"></i></button>
-              <button class="icon-btn danger" data-delete title="Delete"><i data-lucide="trash-2"></i></button>
+              <button class="icon-btn" data-edit title="<?= e(__('Edit')) ?>"><i data-lucide="pencil"></i></button>
+              <button class="icon-btn danger" data-delete title="<?= e(__('Delete')) ?>"><i data-lucide="trash-2"></i></button>
             </td>
           </tr>
         <?php endforeach; ?>
         <?php if (!$data): ?>
-          <tr><td colspan="20" class="empty">Nothing here yet. Click “Add <?= e($m['singular']) ?>”.</td></tr>
+          <tr><td colspan="20" class="empty"><?= e(__('nothing_here')) ?></td></tr>
         <?php endif; ?>
       </tbody>
     </table>
@@ -91,8 +91,8 @@ require __DIR__ . '/header.php';
         <?php foreach ($m['fields'] as $f) render_field($f, $lookups); ?>
       </div>
       <div class="modal-foot">
-        <button type="button" class="btn" data-close>Cancel</button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn" data-close><?= e(__('Cancel')) ?></button>
+        <button type="submit" class="btn btn-primary"><?= e(__('Save')) ?></button>
       </div>
     </form>
   </div>
@@ -106,6 +106,7 @@ require __DIR__ . '/header.php';
 window.CRUD = {
   module: <?= json_encode($module) ?>,
   singular: <?= json_encode($m['singular']) ?>,
+  singular_i18n: <?= json_encode(__($m['singular'])) ?>,
   sortable: <?= !empty($m['sortable']) ? 'true' : 'false' ?>,
   filter: <?= json_encode($filter['name'] ?? null) ?>,
   fields: <?= json_encode(array_map(fn($f) => ['name' => $f['name'], 'type' => $f['type']], $m['fields'])) ?>,

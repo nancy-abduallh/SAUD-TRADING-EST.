@@ -98,11 +98,11 @@
             const res = await fetch('api.php?' + qs, { method: 'POST', body: new FormData(form), headers: { 'X-CSRF-Token': window.CSRF } });
             const j = await parse(res);
             if (j.ok) {
-                toast(j.message || 'Saved');
+                toast(j.message || (window.I18N && window.I18N.saved) || 'Saved');
                 if ('reset' in form.dataset) form.reset();
                 if ('reload' in form.dataset) setTimeout(() => location.reload(), 500);
-            } else toast(j.error || 'Something went wrong', 'err');
-        } catch { toast('Network error', 'err'); }
+            } else toast(j.error || (window.I18N && window.I18N.something_wrong) || 'Something went wrong', 'err');
+        } catch { toast((window.I18N && window.I18N.network_error) || 'Network error', 'err'); }
         btn && (btn.disabled = false);
     });
 
@@ -127,6 +127,9 @@
         if (!C) return;
         const modal = $('#formModal'), form = $('#recordForm'), tbody = $('#dataTable tbody');
         const idField = form.querySelector('[name=id]');
+        const titleSingular = C.singular_i18n || C.singular;
+        const txtAdd = (window.I18N && window.I18N.add) || 'Add';
+        const txtEdit = (window.I18N && window.I18N.edit) || 'Edit';
 
         const fill = row => {
             form.reset();
@@ -148,19 +151,19 @@
             if (!row && C.filter && $('#filterSel')?.value) form.elements[C.filter].value = $('#filterSel').value;
         };
 
-        $('[data-add]').addEventListener('click', () => { fill(null); $('#modalTitle').textContent = 'Add ' + C.singular; openModal(modal); });
+        $('[data-add]').addEventListener('click', () => { fill(null); $('#modalTitle').textContent = txtAdd + ' ' + titleSingular; openModal(modal); });
 
         tbody.addEventListener('click', async e => {
             const tr = e.target.closest('tr[data-id]');
             if (!tr) return;
             if (e.target.closest('[data-edit]')) {
-                fill(C.rows[tr.dataset.id]); $('#modalTitle').textContent = 'Edit ' + C.singular; openModal(modal);
+                fill(C.rows[tr.dataset.id]); $('#modalTitle').textContent = txtEdit + ' ' + titleSingular; openModal(modal);
             } else if (e.target.closest('[data-delete]')) {
-                const extra = C.module === 'services' ? ' All its categories and products will be deleted too.'
-                    : C.module === 'categories' ? ' All its products will be deleted too.' : '';
-                if (!await confirmDialog('Delete this ' + C.singular.toLowerCase() + '?' + extra)) return;
+                const promptMsg = (window.I18N && window.I18N.delete_confirm) || ('Delete this ' + C.singular.toLowerCase() + '?');
+                if (!await confirmDialog(promptMsg)) return;
                 const j = await api('delete', { id: tr.dataset.id }, { module: C.module });
-                if (j.ok) { tr.remove(); toast(j.message); } else toast(j.error, 'err');
+                if (j.ok) { tr.remove(); toast(j.message || (window.I18N && window.I18N.saved) || 'Deleted'); }
+                else toast(j.error || (window.I18N && window.I18N.something_wrong) || 'Error', 'err');
             }
         });
 
@@ -168,7 +171,8 @@
             if (!e.target.classList.contains('tg')) return;
             const tr = e.target.closest('tr');
             const j = await api('toggle', { id: tr.dataset.id }, { module: C.module });
-            if (!j.ok) { e.target.checked = !e.target.checked; toast(j.error, 'err'); } else toast(j.value ? 'Enabled' : 'Disabled');
+            if (!j.ok) { e.target.checked = !e.target.checked; toast(j.error || (window.I18N && window.I18N.something_wrong), 'err'); }
+            else toast(j.value ? ((window.I18N && window.I18N.enabled) || 'Enabled') : ((window.I18N && window.I18N.disabled) || 'Disabled'));
         });
 
         if (C.sortable) {
@@ -243,17 +247,16 @@
     function initCharts() {
         const D = window.DASH;
         if (!D || !window.Chart) return;
-        Chart.defaults.color = '#9aa4d6';
-        Chart.defaults.font.family = "Inter, Cairo, sans-serif";
-        Chart.defaults.borderColor = 'rgba(255,255,255,.06)';
-        const pal = ['#4fc3f7', '#26c6da', '#7986cb', '#ba68c8', '#ffb74d', '#81c784', '#f06292', '#4db6ac', '#ffd54f', '#90a4ae', '#a1887f', '#e57373', '#64b5f6'];
+        Chart.defaults.color = '#5e6e87';
+        Chart.defaults.borderColor = 'rgba(13, 33, 72, .07)';
+        const pal = ['#b6873f', '#dfc084', '#d4af37', '#ffd54f', '#8a6428', '#0d2148', '#173263', '#2d4b85', '#059669', '#f59e0b', '#64748b'];
         const base = { responsive: true, maintainAspectRatio: false };
 
         new Chart($('#chMsgs'), {
             type: 'line', data: {
                 labels: D.msgs.labels, datasets: [{
                     label: 'Messages', data: D.msgs.data,
-                    borderColor: '#4fc3f7', backgroundColor: 'rgba(79,195,247,.16)', fill: true, tension: .35, pointRadius: 4
+                    borderColor: '#b6873f', backgroundColor: 'rgba(182, 135, 63, .12)', fill: true, tension: .35, pointRadius: 4
                 }]
             },
             options: { ...base, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
@@ -263,7 +266,7 @@
             type: 'doughnut', data: {
                 labels: D.perSector.labels, datasets: [{
                     data: D.perSector.data,
-                    backgroundColor: pal, borderWidth: 0
+                    backgroundColor: pal, borderWidth: 2, borderColor: '#ffffff'
                 }]
             }, options: { ...base, cutout: '62%', plugins: { legend: { position: 'bottom' } } }
         });
@@ -284,7 +287,7 @@
             type: 'bar', data: {
                 labels: ['1★', '2★', '3★', '4★', '5★'], datasets: [{
                     label: 'Testimonials',
-                    data: D.ratings, backgroundColor: '#26c6da', borderRadius: 6
+                    data: D.ratings, backgroundColor: '#0d2148', borderRadius: 6
                 }]
             },
             options: { ...base, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }

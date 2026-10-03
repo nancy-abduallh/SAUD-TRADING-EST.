@@ -17,6 +17,31 @@ if (!defined('NO_SESSION') && session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+/* ---------- language & internationalization ---------- */
+if (isset($_GET['lang'])) {
+    $reqLang = strtolower(trim((string)$_GET['lang']));
+    if (in_array($reqLang, ['ar', 'en'], true)) {
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $_SESSION['lang'] = $reqLang;
+        }
+        setcookie('admin_lang', $reqLang, time() + 86400 * 365, '/');
+    }
+}
+function current_lang(): string {
+    return $_SESSION['lang'] ?? $_COOKIE['admin_lang'] ?? 'ar';
+}
+function is_rtl(): bool {
+    return current_lang() === 'ar';
+}
+function __(string $key, ?string $fallback = null): string {
+    static $dict = null;
+    if ($dict === null) {
+        $dict = file_exists(__DIR__ . '/includes/lang.php') ? require __DIR__ . '/includes/lang.php' : [];
+    }
+    $lang = current_lang();
+    return $dict[$lang][$key] ?? $dict['en'][$key] ?? $fallback ?? $key;
+}
+
 /* ---------- database helpers ---------- */
 function db(): mysqli {
     static $c = null;

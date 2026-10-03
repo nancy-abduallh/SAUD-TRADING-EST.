@@ -182,6 +182,11 @@ CREATE TABLE activity_log (
 ) ENGINE=InnoDB;
 
 -- ============ SEED: everything from site-data ============
+INSERT INTO hero_slides (id, title, subtitle, description, image_url, cta_text, cta_link, sort_order, is_active) VALUES
+(1, 'نربط العالم بأمانة سعودية', 'ريادة التجارة العالمية', 'حلول متكاملة لسلاسل الإمداد، من المواد الخام البلاستيكية إلى أجود أنواع الأغذية العالمية، بمعايير تتجاوز التوقعات.', 'uploads/hero/hero-port.jpg', 'استكشف قطاعاتنا', '#sectors', 1, 1),
+(2, 'رؤية سعودية تتجاوز الحدود', 'رؤية سعودية عالمية', 'من قلب المملكة إلى أسواق مصر والإمارات، نبني منظومة تجارية ورقمية متكاملة تواكب رؤية 2030.', 'uploads/hero/hero-skyline.jpg', 'عن سعود التجارية', '#about', 2, 1),
+(3, 'شبكة عالمية من الشركاء والموارد', 'شبكة مترابطة', 'أكثر من 45 سوقاً دولياً ومنظومة رقمية مدعومة بالذكاء الاصطناعي تربطك بعملائك أينما كانوا.', 'uploads/hero/hero-globe.jpg', 'تواصل معنا', '#contact', 3, 1);
+
 INSERT INTO sectors (id, slug, title, english, description, image, image_alt, sort_order) VALUES
 (1,'plastics','قطاع اللدائن والبلاستيك','INDUSTRIAL MATERIALS','مواد خام موثقة المواصفات للصناعات التحويلية وحلول التعبئة.','uploads/sectors/plastics-sector.jpg','حبيبات بلاستيكية خام شفافة وخضراء',1),
 (2,'food','قطاع المواد الغذائية','FOOD COMMODITIES','سلع غذائية مختارة بعناية من مصادر دولية معتمدة.','uploads/sectors/food-sector.jpg','أرز بسمتي فاخر في وعاء تقليدي',2),
