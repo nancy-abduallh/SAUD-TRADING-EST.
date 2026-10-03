@@ -372,7 +372,6 @@
 
 @utility anim-logo-float {
   animation: logo-float var(--float-dur, 6s) ease-in-out var(--float-delay, 0s) infinite;
-  will-change: transform;
 }
 
 @utility anim-logo-shine {
@@ -384,7 +383,6 @@
 
 @utility anim-kenburns {
   animation: kenburns 30s ease-in-out infinite alternate;
-  will-change: transform;
 }
 
 @utility anim-pan {
@@ -464,7 +462,6 @@
     transform-style: preserve-3d;
     transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
     transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    will-change: transform;
   }
 
   .tilt:hover {

@@ -22,6 +22,10 @@ export default defineConfig({
   server: {
     host: true, // all interfaces (IPv4-safe; "::" fails on machines without IPv6)
     port: 8080,
+    // don't let the dev server watch the PHP admin, uploads, cache or image backups
+    watch: {
+      ignored: ["**/admin/**", "**/originals-backup/**", "**/node_modules/**"],
+    },
   },
   resolve: {
     alias: {

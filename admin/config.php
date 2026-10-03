@@ -10,7 +10,8 @@ define('SESSION_TIMEOUT', 1800); // 30 min idle
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-if (session_status() === PHP_SESSION_NONE) {
+// public_api.php sets NO_SESSION so the public site never waits on a login session lock
+if (!defined('NO_SESSION') && session_status() === PHP_SESSION_NONE) {
     session_name('saud_admin');
     session_set_cookie_params(['httponly' => true, 'samesite' => 'Lax']);
     session_start();
@@ -94,7 +95,15 @@ function require_login(bool $json = false): void {
     }
     $_SESSION['last'] = time();
 }
+
+/* Deletes the cached public site data so the next visit rebuilds it from the database. */
+function clear_site_cache(): void {
+    foreach (glob(__DIR__ . '/cache/site-*.json') ?: [] as $f) {
+        @unlink($f);
+    }
+}
 function log_activity(string $action, string $details = ''): void {
+    clear_site_cache(); // any admin action may have changed site data
     try {
         run('INSERT INTO activity_log (admin_id, action, details) VALUES (?,?,?)',
             [$_SESSION['admin_id'] ?? null, $action, mb_substr($details, 0, 480)]);

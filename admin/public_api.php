@@ -1,4 +1,5 @@
 <?php
+define('NO_SESSION', true); 
 require __DIR__ . '/config.php';
 
 header('Access-Control-Allow-Origin: *');
@@ -25,6 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     json_out(['ok' => true]);
 }
 
+/* ---- cache: reuse the last result for 5 minutes ---- */
+$cacheDir = __DIR__ . '/cache/';
+$cacheFile = $cacheDir . 'site-' . md5($_SERVER['HTTP_HOST'] ?? 'local') . '.json';
+if (is_file($cacheFile) && (time() - filemtime($cacheFile)) < 300) {
+    readfile($cacheFile);
+    exit;
+}
+
 /* ---- full site data (same shape as site-data) ---- */
 $base = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']
     . rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/') . '/';
@@ -48,7 +57,7 @@ foreach (rows('SELECT p.*, c.name AS cat FROM products p JOIN categories c ON c.
 $settings = array_column(rows('SELECT setting_key, setting_value FROM site_settings'), 'setting_value', 'setting_key');
 $about = row('SELECT * FROM about_content WHERE id = 1') ?: [];
 
-echo json_encode([
+$json = json_encode([
     'sectors' => $sectors,
     'products' => $products,
     'visionStatement' => (string)($about['vision'] ?? ''),
@@ -78,3 +87,9 @@ echo json_encode([
     'faqs' => array_map(fn($r) => ['question' => $r['question'], 'answer' => (string)$r['answer']],
         rows('SELECT * FROM faqs WHERE is_active = 1 ORDER BY sort_order, id')),
 ], JSON_UNESCAPED_UNICODE);
+
+if ($json === false) json_out(['ok' => false, 'error' => 'Could not encode site data'], 500);
+
+if (!is_dir($cacheDir)) @mkdir($cacheDir, 0775, true);
+@file_put_contents($cacheFile, $json, LOCK_EX);
+echo $json;

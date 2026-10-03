@@ -8,7 +8,8 @@ import { SectionHeading } from "@/components/effects/SectionHeading";
 import { Tilt } from "@/components/effects/Tilt";
 import { Button } from "@/components/ui/button";
 import { ImageLightbox, type LightboxItem } from "@/components/ui/image-lightbox";
-import { products, sectors, type CategoryName, type Product, type SectorKey } from "@/lib/site-data";
+import { products } from "@/lib/product-data";
+import { sectors, type CategoryName, type Product, type SectorKey } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
 const skuPrefix: Record<SectorKey, string> = {

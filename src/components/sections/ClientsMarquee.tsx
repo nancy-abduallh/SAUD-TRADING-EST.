@@ -4,7 +4,7 @@ import heroSkyline from "@/assets/hero-skyline.jpg";
 import { MovingBg } from "@/components/effects/MovingBg";
 import { Reveal } from "@/components/effects/Reveal";
 import { SectionHeading } from "@/components/effects/SectionHeading";
-import { clients } from "@/lib/site-data";
+import { clients } from "@/lib/client-data";
 
 /** Small gold divider (line — diamond — line) shown under the heading. */
 function GoldDivider() {
